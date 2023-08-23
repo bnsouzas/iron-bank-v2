@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: native.dockerfile
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/iron-bank
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/iron-bank?user=postgres&password=root
       SPRING_DEVTOOLS_LIVERELOAD_ENABLED: false
     ports:
       - "8090:8080"
@@ -14,7 +14,7 @@ services:
       context: .
       dockerfile: jvm.dockerfile
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/iron-bank
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/iron-bank?user=postgres&password=root
       SPRING_DEVTOOLS_LIVERELOAD_ENABLED: false
     ports:
       - "8095:8080"
