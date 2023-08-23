@@ -1,0 +1,32 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    id: Pull Cache Image JVM
+    entrypoint: 'bash'
+    args: ['-c', 'docker pull gcr.io/$PROJECT_ID/iron-bank:v2-jvm || exit 0']
+  - name: "gcr.io/cloud-builders/docker"
+    id: Pull Cache Image NATIVE
+    entrypoint: 'bash'
+    args: [ '-c', 'docker pull gcr.io/$PROJECT_ID/iron-bank:v2-native || exit 0' ]
+  - name: "gcr.io/cloud-builders/docker"
+    id: Build Image JVM
+    entrypoint: 'bash'
+    args: ['-c', 'docker build -f jvm.dockerfile --cache-from gcr.io/$PROJECT_ID/iron-bank:v2-jvm -t gcr.io/$PROJECT_ID/iron-bank:v2-jvm -t gcr.io/$PROJECT_ID/iron-bank:v2-jvm-$COMMIT_SHA .']
+  - name: "gcr.io/cloud-builders/docker"
+    id: Build Image NATIVE
+    entrypoint: 'bash'
+    args: [ '-c', 'docker build -f native.dockerfile --cache-from gcr.io/$PROJECT_ID/iron-bank:v2-native -t gcr.io/$PROJECT_ID/iron-bank:v2-native -t gcr.io/$PROJECT_ID/iron-bank:v2-native-$COMMIT_SHA .' ]
+  - name: "gcr.io/cloud-builders/docker"
+    id: Push Image
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        docker push gcr.io/$PROJECT_ID/iron-bank:v2-jvm
+        docker push gcr.io/$PROJECT_ID/iron-bank:v2-native
+        docker push gcr.io/$PROJECT_ID/iron-bank:v2-jvm-$COMMIT_SHA
+        docker push gcr.io/$PROJECT_ID/iron-bank:v2-native-$COMMIT_SHA
+images:
+- gcr.io/$PROJECT_ID/iron-bank:v2-jvm
+- gcr.io/$PROJECT_ID/iron-bank:v2-native
+- gcr.io/$PROJECT_ID/iron-bank:v2-jvm-$COMMIT_SHA
+- gcr.io/$PROJECT_ID/iron-bank:v2-native-$COMMIT_SHA
