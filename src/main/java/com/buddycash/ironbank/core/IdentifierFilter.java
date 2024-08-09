@@ -18,14 +18,16 @@ public class IdentifierFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         var req = (HttpServletRequest) servletRequest;
-        var accoundId = Optional.ofNullable(req.getHeader("x-account-id"));
-        var accountActive = Optional.ofNullable(req.getHeader("x-account-active"))
-                .map(active -> active.equals("true"));
-        accoundId.orElseThrow(AccountIdNotFoundException::new);
-        accountActive.orElseThrow(AccountInactiveException::new);
-        accountActive.ifPresent((active) -> {
-            if (!active) throw new AccountInactiveException();
-        });
+        if (!req.getRequestURI().contains("/actuator") && !req.getRequestURI().contains("/favicon.ico")) {
+            var accoundId = Optional.ofNullable(req.getHeader("x-account-id"));
+            var accountActive = Optional.ofNullable(req.getHeader("x-account-active"))
+                    .map(active -> active.equals("true"));
+            accoundId.orElseThrow(AccountIdNotFoundException::new);
+            accountActive.orElseThrow(AccountInactiveException::new);
+            accountActive.ifPresent((active) -> {
+                if (!active) throw new AccountInactiveException();
+            });
+        }
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }

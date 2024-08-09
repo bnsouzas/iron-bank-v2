@@ -1,4 +1,4 @@
-FROM debian:11-slim as base
+FROM debian:12-slim as base
 RUN apt update \
     && rm /bin/sh && ln -s /bin/bash /bin/sh \
     && apt install -y curl wget unzip zip \
@@ -6,7 +6,7 @@ RUN apt update \
     && rm -rf /var/lib/apt/lists/*
 
 ARG JAVA_VERSION
-ENV JAVA_VERSION 22.3.r17-grl
+ENV JAVA_VERSION 17.0.9-graalce
 ENV PATH /root/.sdkman/candidates/java/current/bin:$PATH
 RUN curl -s "https://get.sdkman.io" | bash \
     && source "$HOME/.sdkman/bin/sdkman-init.sh" \
@@ -17,7 +17,7 @@ WORKDIR /app
 COPY . .
 RUN ./mvnw -Pnative -DskipTests clean package
 
-FROM debian:11-slim
+FROM debian:12-slim
 WORKDIR /app
 # Copy the built application from the previous image
 COPY --from=builder /app/target/iron-bank ./app

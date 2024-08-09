@@ -1,4 +1,4 @@
-FROM debian:11-slim as base
+FROM debian:12-slim as base
 RUN apt update \
     && rm /bin/sh && ln -s /bin/bash /bin/sh \
     && apt install -y curl wget unzip zip \
@@ -17,7 +17,7 @@ WORKDIR /app
 COPY . .
 RUN ./mvnw -DskipTests clean package
 
-FROM base
+FROM openjdk:17-slim
 WORKDIR /app
 # Copy the built application from the previous image
 COPY --from=builder /app/target/iron-bank-0.0.1-SNAPSHOT.jar ./app.jar
