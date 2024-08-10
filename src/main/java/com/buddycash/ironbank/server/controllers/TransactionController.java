@@ -1,9 +1,8 @@
-package com.buddycash.ironbank.transactions;
+package com.buddycash.ironbank.server.controllers;
 
-import com.buddycash.ironbank.transactions.data.TransactionCreate;
-import com.buddycash.ironbank.transactions.data.TransactionResponse;
-import com.buddycash.ironbank.transactions.services.TransactionService;
-import org.modelmapper.ModelMapper;
+import com.buddycash.ironbank.domain.transactions.data.TransactionCreate;
+import com.buddycash.ironbank.domain.transactions.data.TransactionResponse;
+import com.buddycash.ironbank.domain.transactions.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +16,6 @@ import java.util.UUID;
 public class TransactionController {
 
     @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
     private TransactionService transactionService;
 
     @GetMapping
@@ -30,8 +26,7 @@ public class TransactionController {
 
     @PostMapping
     public TransactionResponse add(@RequestBody TransactionCreate transactionCreate, @RequestHeader("x-account-id") UUID accountId) {
-        transactionCreate.setAccount(accountId);
-        var transaction = transactionService.create(transactionCreate);
+        var transaction = transactionService.create(accountId, transactionCreate);
         return transaction;
     }
 

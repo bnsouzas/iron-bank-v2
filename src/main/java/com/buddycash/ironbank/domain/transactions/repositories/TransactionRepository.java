@@ -1,6 +1,6 @@
-package com.buddycash.ironbank.transactions.repositories;
+package com.buddycash.ironbank.domain.transactions.repositories;
 
-import com.buddycash.ironbank.transactions.models.Transaction;
+import com.buddycash.ironbank.domain.transactions.models.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;

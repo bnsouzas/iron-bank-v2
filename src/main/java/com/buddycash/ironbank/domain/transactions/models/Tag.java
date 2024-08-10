@@ -1,6 +1,5 @@
-package com.buddycash.ironbank.transactions.models;
+package com.buddycash.ironbank.domain.transactions.models;
 
-import com.buddycash.ironbank.transactions.data.TransactionCreate;
 import jakarta.persistence.*;
 
 import java.util.Set;

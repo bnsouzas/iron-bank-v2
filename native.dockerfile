@@ -4,9 +4,8 @@ RUN apt update \
     && apt install -y curl wget unzip zip \
         build-essential zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
-
 ARG JAVA_VERSION
-ENV JAVA_VERSION 17.0.9-graalce
+ENV JAVA_VERSION 21.0.2-graalce
 ENV PATH /root/.sdkman/candidates/java/current/bin:$PATH
 RUN curl -s "https://get.sdkman.io" | bash \
     && source "$HOME/.sdkman/bin/sdkman-init.sh" \

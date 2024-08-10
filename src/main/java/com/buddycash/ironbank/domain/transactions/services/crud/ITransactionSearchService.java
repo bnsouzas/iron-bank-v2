@@ -1,6 +1,6 @@
-package com.buddycash.ironbank.transactions.services.crud;
+package com.buddycash.ironbank.domain.transactions.services.crud;
 
-import com.buddycash.ironbank.transactions.data.TransactionResponse;
+import com.buddycash.ironbank.domain.transactions.data.TransactionResponse;
 
 import java.util.Collection;
 import java.util.Optional;

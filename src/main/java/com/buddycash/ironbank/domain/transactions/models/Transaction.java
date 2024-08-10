@@ -1,12 +1,19 @@
-package com.buddycash.ironbank.transactions.data;
+package com.buddycash.ironbank.domain.transactions.models;
+
+import com.buddycash.ironbank.domain.transactions.data.TransactionType;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-public class TransactionResponse {
+@Entity
+@Table(name = "transactions")
+public class Transaction {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false)
     private UUID id;
     private UUID account;
     private TransactionType type;
@@ -14,7 +21,12 @@ public class TransactionResponse {
     private String name;
     private String description;
     private BigDecimal price;
-    private Set<TagResponse> tags;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "transaction_tags",
+            joinColumns = @JoinColumn(name = "transaction_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> tags;
 
     public UUID getId() {
         return id;
@@ -72,34 +84,12 @@ public class TransactionResponse {
         this.price = price;
     }
 
-    public Set<TagResponse> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(Set<TagResponse> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TransactionResponse that = (TransactionResponse) o;
-        return Objects.equals(id, that.id) && Objects.equals(account, that.account) && type == that.type && Objects.equals(transactionAt, that.transactionAt) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(price, that.price) && Objects.equals(tags, that.tags);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, account, type, transactionAt, name, description, price, tags);
-    }
-
-    @Override
-    public String toString() {
-        return "TransactionResponse{" +
-                "id=" + id +
-                ", account=" + account +
-                ", type=" + type +
-                ", name='" + name + '\'' +
-                '}';
-    }
 }

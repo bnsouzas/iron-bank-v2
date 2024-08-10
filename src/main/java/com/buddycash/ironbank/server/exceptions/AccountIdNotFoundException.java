@@ -1,8 +1,8 @@
-package com.buddycash.ironbank.core.exceptions;
+package com.buddycash.ironbank.server.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = HttpStatus.BAD_GATEWAY)
+@ResponseStatus(code = HttpStatus.BAD_GATEWAY)
 public class AccountIdNotFoundException extends RuntimeException {
 }
