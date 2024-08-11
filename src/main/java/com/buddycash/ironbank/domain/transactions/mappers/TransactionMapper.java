@@ -40,7 +40,7 @@ public abstract class TransactionMapper {
         return transaction;
     }
 
-    public Transaction parse(TransactionResponse transactionResponse) {
+    public static Transaction parse(TransactionResponse transactionResponse) {
         var tags = transactionResponse.tags().stream().map(TagMapper::parse).collect(Collectors.toSet());
         var transaction = new Transaction();
         transaction.setId(transactionResponse.id());
