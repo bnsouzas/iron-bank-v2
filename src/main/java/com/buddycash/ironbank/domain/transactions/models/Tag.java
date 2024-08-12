@@ -2,6 +2,7 @@ package com.buddycash.ironbank.domain.transactions.models;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ public class Tag {
     private UUID account;
     private String name;
     @ManyToMany(mappedBy = "tags")
-    private Set<Transaction> transactions;
+    private Set<Transaction> transactions = new HashSet<Transaction>();
 
     public Tag() {
 

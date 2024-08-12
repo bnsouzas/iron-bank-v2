@@ -50,7 +50,7 @@ public abstract class TransactionMapper {
         transaction.setName(transactionResponse.name());
         transaction.setDescription(transactionResponse.description());
         transaction.setPrice(transactionResponse.price());
-        transaction.setTags(tags);
+        transaction.getTags().addAll(tags);
         return transaction;
     }
 }

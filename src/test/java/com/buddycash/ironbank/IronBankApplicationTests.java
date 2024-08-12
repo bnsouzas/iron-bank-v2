@@ -1,23 +1,17 @@
 package com.buddycash.ironbank;
 
-import io.zonky.test.db.postgres.embedded.FlywayPreparer;
-import io.zonky.test.db.postgres.junit.EmbeddedPostgresRules;
-import io.zonky.test.db.postgres.junit.PreparedDbRule;
-import io.zonky.test.db.postgres.junit.SingleInstancePostgresRule;
-import org.junit.Rule;
+import com.buddycash.ironbank.configuration.BaseApplicationTest;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 @SpringBootTest
-class IronBankApplicationTests {
+class IronBankApplicationTests extends BaseApplicationTest {
 
-	@Rule
-	public SingleInstancePostgresRule pg = EmbeddedPostgresRules.singleInstance();
-
-	@Rule
-	public PreparedDbRule db =
-			EmbeddedPostgresRules.preparedDatabase(
-					FlywayPreparer.forClasspathLocation("db/migration"));
 	@Test
 	void contextLoads() {
 	}

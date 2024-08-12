@@ -6,6 +6,7 @@ import com.buddycash.ironbank.domain.transactions.mappers.TransactionMapper;
 import com.buddycash.ironbank.domain.transactions.models.Tag;
 import com.buddycash.ironbank.domain.transactions.repositories.TagRepository;
 import com.buddycash.ironbank.domain.transactions.repositories.TransactionRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ public class TransactionCreateService implements ITransactionCreateService {
     @Autowired
     private TagRepository tagRepository;
 
+    @Transactional
     public TransactionResponse create(UUID accountId, TransactionCreate transactionToCreate) {
         var transaction = TransactionMapper.parse(accountId, transactionToCreate);
         transaction.getTags().clear();

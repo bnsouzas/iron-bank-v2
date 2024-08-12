@@ -1,10 +1,9 @@
-package com.buddycash.ironbank.domain.transactions;
+package com.buddycash.ironbank.domain.transactions.mappers;
 
 import com.buddycash.ironbank.domain.transactions.data.TagResponse;
 import com.buddycash.ironbank.domain.transactions.data.TransactionCreate;
 import com.buddycash.ironbank.domain.transactions.data.TransactionResponse;
 import com.buddycash.ironbank.domain.transactions.data.TransactionType;
-import com.buddycash.ironbank.domain.transactions.mappers.TransactionMapper;
 import com.buddycash.ironbank.domain.transactions.models.Tag;
 import com.buddycash.ironbank.domain.transactions.models.Transaction;
 import org.junit.jupiter.api.Assertions;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
-import java.util.List;
 import java.util.UUID;
 
 public class TransactionMapperTests {
@@ -43,7 +41,6 @@ public class TransactionMapperTests {
     @Test
     void transactionCreateToTransactionModelParseTest() {
         var account = UUID.randomUUID();
-        var housing = new TagResponse(null, account, "housing");
         var tags = new HashSet<String>();
         tags.add("housing");
         tags.add("bill");
@@ -74,10 +71,8 @@ public class TransactionMapperTests {
         transaction.setName("Water");
         transaction.setDescription("Water Bill");
         transaction.setPrice(BigDecimal.TEN);
-        var tags = new HashSet<Tag>();
-        tags.add(make(transaction, "housing"));
-        tags.add(make(transaction, "bill"));
-        transaction.setTags(tags);
+        transaction.getTags().add(make(transaction, "housing"));
+        transaction.getTags().add(make(transaction, "bill"));
 
         var transactionResponse = TransactionMapper.parse(transaction);
         Assertions.assertEquals(transactionResponse.id(), transaction.getId());
@@ -100,7 +95,7 @@ public class TransactionMapperTests {
     private Tag make(Transaction transaction, String tagName) {
         var tag = new Tag(transaction.getAccount(), tagName);
         tag.setId(UUID.randomUUID());
-        tag.setTransactions(new HashSet<>(List.of(transaction)));
+        tag.getTransactions().add(transaction);
         return tag;
     }
 }

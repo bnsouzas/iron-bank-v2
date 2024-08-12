@@ -9,4 +9,7 @@ public record TransactionCreate (UUID account, TransactionType type, Instant tra
     public TransactionCreate(UUID account, TransactionCreate original) {
         this(account, original.type, original.transactionAt, original.name, original.description, original.price, original.tags);
     }
+    public TransactionCreate (UUID account, TransactionType type, Instant transactionAt, String name, String description, BigDecimal price) {
+        this(account, type, transactionAt, name, description, price, Set.of());
+    }
 }

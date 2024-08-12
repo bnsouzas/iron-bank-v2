@@ -3,6 +3,8 @@ package com.buddycash.ironbank.domain.transactions.mappers;
 import com.buddycash.ironbank.domain.transactions.data.TagResponse;
 import com.buddycash.ironbank.domain.transactions.models.Tag;
 
+import java.util.Set;
+
 public abstract class TagMapper {
     public static TagResponse parse(Tag tag) {
         return new TagResponse(tag.getId(), tag.getAccount(), tag.getName());
@@ -13,6 +15,7 @@ public abstract class TagMapper {
         tag.setId(tagResponse.id());
         tag.setName(tagResponse.name());
         tag.setAccount(tagResponse.account());
+        tag.setTransactions(Set.of());
         return tag;
     }
 }
