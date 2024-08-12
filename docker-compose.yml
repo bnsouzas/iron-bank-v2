@@ -9,15 +9,25 @@ services:
        SPRING_DEVTOOLS_LIVERELOAD_ENABLED: false
      ports:
        - "8090:8080"
-#  app-jvm:
-#    build:
-#      context: .
-#      dockerfile: jvm.dockerfile
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/iron-bank?user=postgres&password=root
-#      SPRING_DEVTOOLS_LIVERELOAD_ENABLED: false
-#    ports:
-#      - "8095:8080"
+     depends_on:
+       - db
+       - broker-1
+       - broker-2
+       - broker-3
+  app-jvm:
+    build:
+      context: .
+      dockerfile: jvm.dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/iron-bank?user=postgres&password=root
+      SPRING_DEVTOOLS_LIVERELOAD_ENABLED: false
+    ports:
+      - "8095:8080"
+    depends_on:
+      - db
+      - broker-1
+      - broker-2
+      - broker-3
   db:
     image: postgres:14-alpine
     environment:
@@ -105,7 +115,7 @@ services:
 
   broker-3:
     image: apache/kafka:3.8.0
-    hostname: broker-3
+    container_name: broker-3
     ports:
       - 49092:9092
     environment:
