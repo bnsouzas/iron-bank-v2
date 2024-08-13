@@ -34,6 +34,19 @@ public class TransactionCreateServiceTests extends BaseApplicationTest {
     }
 
     @Test
+    void createNewOutcomeTransactionWithNullAccountId() {
+        var tags = new HashSet<String>();
+        tags.add("housing");
+        tags.add("bill");
+        var transactionCreate = new TransactionCreate(null, TransactionType.OUTCOME, Instant.now(), "Water", "Water Bill", BigDecimal.TEN, tags);
+        var transactionResponse = this.transactionService.create(accountId, transactionCreate);
+        Assertions.assertNotNull(transactionResponse);
+        Assertions.assertNotNull(transactionResponse.id());
+        Assertions.assertEquals(TransactionType.OUTCOME, transactionResponse.type());
+        Assertions.assertEquals(2, transactionResponse.tags().size());
+    }
+
+    @Test
     void createNewOutcomeTransactionWithoutTags() {
         var transactionCreate = new TransactionCreate(accountId, TransactionType.OUTCOME, Instant.now(), "Water", "Water Bill", BigDecimal.TEN);
         var transactionResponse = this.transactionService.create(accountId, transactionCreate);

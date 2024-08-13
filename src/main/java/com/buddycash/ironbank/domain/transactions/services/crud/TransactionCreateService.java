@@ -6,8 +6,10 @@ import com.buddycash.ironbank.domain.transactions.mappers.TransactionMapper;
 import com.buddycash.ironbank.domain.transactions.models.Tag;
 import com.buddycash.ironbank.domain.transactions.repositories.TagRepository;
 import com.buddycash.ironbank.domain.transactions.repositories.TransactionRepository;
+import com.buddycash.ironbank.infra.events.TransactionEventProducer;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -22,18 +24,28 @@ public class TransactionCreateService implements ITransactionCreateService {
     @Autowired
     private TagRepository tagRepository;
 
-    @Transactional
+    @Autowired
+    private TransactionEventProducer transactionEventProducer;
+
     public TransactionResponse create(UUID accountId, TransactionCreate transactionToCreate) {
+        var response = this.persist(accountId, transactionToCreate);
+        this.transactionEventProducer.publish(response);
+        return response;
+    }
+
+    @Transactional
+    private TransactionResponse persist(UUID accountId, TransactionCreate transactionToCreate) {
         var transaction = TransactionMapper.parse(accountId, transactionToCreate);
         transaction.getTags().clear();
         transaction.getTags().addAll(
                 transactionToCreate.tags().stream().map((tagName) -> {
                     var tagReference = tagRepository.findByAccountAndName(transactionToCreate.account(), tagName);
                     if (tagReference.isPresent()) return tagReference.get();
-                    var tag = new Tag(transactionToCreate.account(), tagName);
+                    var tag = new Tag(transaction.getAccount(), tagName);
                     return tagRepository.save(tag);
                 }).collect(Collectors.toSet()));
         var saved = transactionRepository.save(transaction);
-        return TransactionMapper.parse(saved);
+        var response = TransactionMapper.parse(saved);
+        return response;
     }
 }
