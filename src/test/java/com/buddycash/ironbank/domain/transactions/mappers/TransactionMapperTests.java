@@ -1,7 +1,7 @@
 package com.buddycash.ironbank.domain.transactions.mappers;
 
 import com.buddycash.ironbank.domain.transactions.data.TagResponse;
-import com.buddycash.ironbank.domain.transactions.data.TransactionCreate;
+import com.buddycash.ironbank.domain.transactions.data.TransactionCreateRequest;
 import com.buddycash.ironbank.domain.transactions.data.TransactionResponse;
 import com.buddycash.ironbank.domain.transactions.data.TransactionType;
 import com.buddycash.ironbank.domain.transactions.models.Tag;
@@ -44,7 +44,7 @@ public class TransactionMapperTests {
         var tags = new HashSet<String>();
         tags.add("housing");
         tags.add("bill");
-        var transactionCreate = new TransactionCreate(UUID.randomUUID(), TransactionType.OUTCOME, Instant.now(), "Water", "Water Bill", BigDecimal.TEN, tags);
+        var transactionCreate = new TransactionCreateRequest(UUID.randomUUID(), TransactionType.OUTCOME, Instant.now(), "Water", "Water Bill", BigDecimal.TEN, tags);
         var transactionModel = TransactionMapper.parse(account, transactionCreate);
         Assertions.assertNull(transactionModel.getId());
         Assertions.assertEquals(account, transactionModel.getAccount());

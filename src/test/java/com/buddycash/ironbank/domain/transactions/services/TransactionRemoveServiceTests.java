@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.UUID;
+
 @SpringBootTest
 public class TransactionRemoveServiceTests extends BaseApplicationTest {
 
@@ -18,12 +20,20 @@ public class TransactionRemoveServiceTests extends BaseApplicationTest {
 
     @Test
     void removeAllTransactionOfAccount() {
-        var accountId = this.dataGeneratorService.generateAccount();
-        var transactions = this.transactionService.find(accountId);
+        var account = this.dataGeneratorService.generateAccount();
+        var transactions = this.transactionService.find(account.id());
         for (var transaction : transactions) {
-            this.transactionService.remove(accountId, transaction.id());
+            var removed = this.transactionService.remove(account.id(), transaction.id());
+            Assertions.assertTrue(removed.isPresent());
         }
-        var zeroTransactions = this.transactionService.find(accountId);
+        var zeroTransactions = this.transactionService.find(account.id());
         Assertions.assertEquals(0, zeroTransactions.size());
+    }
+
+    @Test
+    public void removeTransactionNotFoundOfAccount() {
+        var account = this.dataGeneratorService.generateAccount();
+        var removed = transactionService.remove(account.id(), UUID.randomUUID());
+        Assertions.assertTrue(removed.isEmpty());
     }
 }

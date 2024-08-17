@@ -20,6 +20,7 @@ public class KafkaConfiguration {
     public NewTopic transactionTopic() {
         return TopicBuilder.name("transaction-events")
                 .partitions(5)
+                .replicas(3)
                 .build();
     }
 }

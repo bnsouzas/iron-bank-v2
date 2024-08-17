@@ -1,6 +1,6 @@
 package com.buddycash.ironbank.domain.transactions.mappers;
 
-import com.buddycash.ironbank.domain.transactions.data.TransactionCreate;
+import com.buddycash.ironbank.domain.transactions.data.TransactionCreateRequest;
 import com.buddycash.ironbank.domain.transactions.data.TransactionResponse;
 import com.buddycash.ironbank.domain.transactions.models.Tag;
 import com.buddycash.ironbank.domain.transactions.models.Transaction;
@@ -22,12 +22,12 @@ public abstract class TransactionMapper {
                 tagsResponse);
     }
 
-    public static Transaction parse(UUID accountId, TransactionCreate transactionCreate) {
-        var transaction = new TransactionCreate(accountId, transactionCreate);
+    public static Transaction parse(UUID accountId, TransactionCreateRequest transactionCreateRequest) {
+        var transaction = new TransactionCreateRequest(accountId, transactionCreateRequest);
         return TransactionMapper.parse(transaction);
     }
 
-    public static Transaction parse(TransactionCreate transactionCreate) {
+    public static Transaction parse(TransactionCreateRequest transactionCreate) {
         var tags = transactionCreate.tags().stream().map(t -> new Tag(transactionCreate.account(), t)).collect(Collectors.toSet());
         var transaction = new Transaction();
         transaction.setAccount(transactionCreate.account());

@@ -13,10 +13,11 @@ public class TransactionEventProducer {
     private String topicName;
 
     @Autowired
-    private KafkaTemplate<String, TransactionResponse> template;
+    private KafkaTemplate<String, TransactionDataEvent> template;
 
-    public void publish(TransactionResponse saved) {
-        var event = template.send(topicName, saved);
+    public void publish(DataEventType type, TransactionResponse saved) {
+        var dataEvent = new TransactionDataEvent(type, saved);
+        var event = template.send(topicName, dataEvent);
         event.whenComplete((result, ex) -> {
             if (ex != null)
                 System.out.println(ex.getMessage());

@@ -1,7 +1,7 @@
 package com.buddycash.ironbank.domain.transactions.services;
 
 import com.buddycash.ironbank.configuration.BaseApplicationTest;
-import com.buddycash.ironbank.domain.transactions.data.TransactionCreate;
+import com.buddycash.ironbank.domain.transactions.data.TransactionCreateRequest;
 import com.buddycash.ironbank.domain.transactions.data.TransactionType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ public class TransactionCreateServiceTests extends BaseApplicationTest {
         var tags = new HashSet<String>();
         tags.add("housing");
         tags.add("bill");
-        var transactionCreate = new TransactionCreate(accountId, TransactionType.OUTCOME, Instant.now(), "Water", "Water Bill", BigDecimal.TEN, tags);
+        var transactionCreate = new TransactionCreateRequest(accountId, TransactionType.OUTCOME, Instant.now(), "Water", "Water Bill", BigDecimal.TEN, tags);
         var transactionResponse = this.transactionService.create(accountId, transactionCreate);
         Assertions.assertNotNull(transactionResponse);
         Assertions.assertNotNull(transactionResponse.id());
@@ -38,7 +38,7 @@ public class TransactionCreateServiceTests extends BaseApplicationTest {
         var tags = new HashSet<String>();
         tags.add("housing");
         tags.add("bill");
-        var transactionCreate = new TransactionCreate(null, TransactionType.OUTCOME, Instant.now(), "Water", "Water Bill", BigDecimal.TEN, tags);
+        var transactionCreate = new TransactionCreateRequest(null, TransactionType.OUTCOME, Instant.now(), "Water", "Water Bill", BigDecimal.TEN, tags);
         var transactionResponse = this.transactionService.create(accountId, transactionCreate);
         Assertions.assertNotNull(transactionResponse);
         Assertions.assertNotNull(transactionResponse.id());
@@ -48,7 +48,7 @@ public class TransactionCreateServiceTests extends BaseApplicationTest {
 
     @Test
     void createNewOutcomeTransactionWithoutTags() {
-        var transactionCreate = new TransactionCreate(accountId, TransactionType.OUTCOME, Instant.now(), "Water", "Water Bill", BigDecimal.TEN);
+        var transactionCreate = new TransactionCreateRequest(accountId, TransactionType.OUTCOME, Instant.now(), "Water", "Water Bill", BigDecimal.TEN);
         var transactionResponse = this.transactionService.create(accountId, transactionCreate);
         Assertions.assertNotNull(transactionResponse);
         Assertions.assertNotNull(transactionResponse.id());
@@ -60,7 +60,7 @@ public class TransactionCreateServiceTests extends BaseApplicationTest {
     void createNewIncomeTransaction() {
         var tags = new HashSet<String>();
         tags.add("salary");
-        var transactionCreate = new TransactionCreate(accountId, TransactionType.INCOME, Instant.now(), "Salary", "Monthly revenue", BigDecimal.valueOf(100), tags);
+        var transactionCreate = new TransactionCreateRequest(accountId, TransactionType.INCOME, Instant.now(), "Salary", "Monthly revenue", BigDecimal.valueOf(100), tags);
         var transactionResponse = this.transactionService.create(accountId, transactionCreate);
         Assertions.assertNotNull(transactionResponse);
         Assertions.assertNotNull(transactionResponse.id());

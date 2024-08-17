@@ -1,6 +1,6 @@
 package com.buddycash.ironbank.domain.transactions.services;
 
-import com.buddycash.ironbank.domain.transactions.data.TransactionCreate;
+import com.buddycash.ironbank.domain.transactions.data.TransactionCreateRequest;
 import com.buddycash.ironbank.domain.transactions.data.TransactionResponse;
 import com.buddycash.ironbank.domain.transactions.services.crud.ITransactionCreateService;
 import com.buddycash.ironbank.domain.transactions.services.crud.ITransactionRemoveService;
@@ -24,7 +24,7 @@ public class TransactionService implements ITransactionSearchService, ITransacti
     private ITransactionRemoveService transactionRemoveService;
 
     @Override
-    public TransactionResponse create(UUID accountId, TransactionCreate transactionToCreate) {
+    public TransactionResponse create(UUID accountId, TransactionCreateRequest transactionToCreate) {
         return transactionCreateService.create(accountId, transactionToCreate);
     }
 

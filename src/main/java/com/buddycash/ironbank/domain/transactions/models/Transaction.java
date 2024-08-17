@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -92,5 +93,4 @@ public class Transaction {
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
-
 }
