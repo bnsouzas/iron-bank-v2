@@ -1,5 +1,8 @@
 package com.buddycash.ironbank.domain.transactions.mappers;
 
+import com.buddycash.ironbank.domain.currencies.AwesomeCurrencyService;
+import com.buddycash.ironbank.domain.currencies.clients.IAwesomeExchangePricesClient;
+import com.buddycash.ironbank.domain.currencies.data.CurrencyAggregatorRequest;
 import com.buddycash.ironbank.domain.transactions.data.TagResponse;
 import com.buddycash.ironbank.domain.transactions.data.TransactionCreateRequest;
 import com.buddycash.ironbank.domain.transactions.data.TransactionResponse;
@@ -7,14 +10,38 @@ import com.buddycash.ironbank.domain.transactions.data.TransactionType;
 import com.buddycash.ironbank.domain.transactions.models.Tag;
 import com.buddycash.ironbank.domain.transactions.models.Transaction;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
 public class TransactionMapperTests {
+
+    private TransactionMapper transactionMapper;
+
+    @BeforeEach
+    void init(@Mock IAwesomeExchangePricesClient awesomeExchangePricesClient) {
+        var awesomeCurrencyService = new AwesomeCurrencyService(awesomeExchangePricesClient);
+        transactionMapper = new TransactionMapper(awesomeCurrencyService);
+    }
+
     @Test
     void transactionResponseToTransactionModelParseTest() {
         var account = UUID.randomUUID();
@@ -22,7 +49,7 @@ public class TransactionMapperTests {
         var tags = new HashSet<TagResponse>();
         tags.add(housing);
         var transactionResponse = new TransactionResponse(UUID.randomUUID(), account, TransactionType.OUTCOME, Instant.now(), "Water", "Water Bill", BigDecimal.TEN, tags);
-        var transactionModel = TransactionMapper.parse(transactionResponse);
+        var transactionModel = transactionMapper.parse(transactionResponse);
         Assertions.assertEquals(transactionResponse.id(), transactionModel.getId());
         Assertions.assertEquals(transactionResponse.account(), transactionModel.getAccount());
         Assertions.assertEquals(transactionResponse.type(), transactionModel.getType());
@@ -45,7 +72,7 @@ public class TransactionMapperTests {
         tags.add("housing");
         tags.add("bill");
         var transactionCreate = new TransactionCreateRequest(UUID.randomUUID(), TransactionType.OUTCOME, Instant.now(), "Water", "Water Bill", BigDecimal.TEN, tags);
-        var transactionModel = TransactionMapper.parse(account, transactionCreate);
+        var transactionModel = transactionMapper.parse(account, transactionCreate);
         Assertions.assertNull(transactionModel.getId());
         Assertions.assertEquals(account, transactionModel.getAccount());
         Assertions.assertEquals(transactionCreate.type(), transactionModel.getType());
@@ -60,7 +87,9 @@ public class TransactionMapperTests {
     }
 
     @Test
-    void transactionToTransactionResponseParseTest() {
+    void transactionToTransactionResponseParseTest(@Mock IAwesomeExchangePricesClient awesomeExchangePricesClient) {
+        lenient().when(awesomeExchangePricesClient.dailyPrice(any(String.class), any(String.class), any(String.class)))
+                .thenReturn(new ArrayList<>());
         var transactionId = UUID.randomUUID();
         var account = UUID.randomUUID();
         var transaction = new Transaction();
@@ -74,7 +103,7 @@ public class TransactionMapperTests {
         transaction.getTags().add(make(transaction, "housing"));
         transaction.getTags().add(make(transaction, "bill"));
 
-        var transactionResponse = TransactionMapper.parse(transaction);
+        var transactionResponse = transactionMapper.parse(transaction);
         Assertions.assertEquals(transactionResponse.id(), transaction.getId());
         Assertions.assertEquals(transactionResponse.account(), transaction.getAccount());
         Assertions.assertEquals(transactionResponse.type(), transaction.getType());

@@ -17,15 +17,19 @@ import java.util.stream.Collectors;
 
 @Service
 public class TransactionCreateService implements ITransactionCreateService {
-
-    @Autowired
     private TransactionRepository transactionRepository;
-
-    @Autowired
     private TagRepository tagRepository;
+    private TransactionEventProducer transactionEventProducer;
+    private TransactionMapper transactionMapper;
 
     @Autowired
-    private TransactionEventProducer transactionEventProducer;
+    public TransactionCreateService(TransactionRepository transactionRepository, TagRepository tagRepository, TransactionEventProducer transactionEventProducer, TransactionMapper transactionMapper) {
+        this.transactionRepository = transactionRepository;
+        this.tagRepository = tagRepository;
+        this.transactionEventProducer = transactionEventProducer;
+        this.transactionMapper = transactionMapper;
+    }
+
 
     public TransactionResponse create(UUID accountId, TransactionCreateRequest transactionToCreate) {
         var response = this.persist(accountId, transactionToCreate);
@@ -35,7 +39,7 @@ public class TransactionCreateService implements ITransactionCreateService {
 
     @Transactional
     private TransactionResponse persist(UUID accountId, TransactionCreateRequest transactionToCreate) {
-        var transaction = TransactionMapper.parse(accountId, transactionToCreate);
+        var transaction = transactionMapper.parse(accountId, transactionToCreate);
         transaction.getTags().clear();
         transaction.getTags().addAll(
                 transactionToCreate.tags().stream().map((tagName) -> {
@@ -45,7 +49,7 @@ public class TransactionCreateService implements ITransactionCreateService {
                     return tagRepository.save(tag);
                 }).collect(Collectors.toSet()));
         var saved = transactionRepository.save(transaction);
-        var response = TransactionMapper.parse(saved);
+        var response = transactionMapper.parse(saved);
         return response;
     }
 }

@@ -13,14 +13,21 @@ import java.util.UUID;
 @Service
 public class TransactionSearchService implements ITransactionSearchService {
 
-    @Autowired
     private TransactionRepository transactionRepository;
+
+    private TransactionMapper transactionMapper;
+
+    @Autowired
+    public TransactionSearchService(TransactionRepository transactionRepository, TransactionMapper transactionMapper) {
+        this.transactionRepository = transactionRepository;
+        this.transactionMapper = transactionMapper;
+    }
 
     @Override
     public Collection<TransactionResponse> find(UUID accountId) {
         var transactions = transactionRepository.findAllByAccount(accountId);
         var response = transactions.stream()
-                .map(TransactionMapper::parse)
+                .map(transactionMapper::parse)
                 .toList();
         return response;
     }
@@ -28,7 +35,7 @@ public class TransactionSearchService implements ITransactionSearchService {
     @Override
     public Optional<TransactionResponse> findById(UUID accountId, UUID id) {
         var transaction = transactionRepository.findByAccountAndId(accountId, id);
-        var response = transaction.map(TransactionMapper::parse);
+        var response = transaction.map(transactionMapper::parse);
         return response;
     }
 }

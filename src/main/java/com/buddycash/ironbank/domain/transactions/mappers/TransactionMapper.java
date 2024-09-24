@@ -1,15 +1,32 @@
 package com.buddycash.ironbank.domain.transactions.mappers;
 
+import com.buddycash.ironbank.domain.currencies.ICurrencyAggregatorService;
+import com.buddycash.ironbank.domain.currencies.data.CurrencyAggregatorRequest;
 import com.buddycash.ironbank.domain.transactions.data.TransactionCreateRequest;
+import com.buddycash.ironbank.domain.transactions.data.TransactionExtraInfo;
 import com.buddycash.ironbank.domain.transactions.data.TransactionResponse;
 import com.buddycash.ironbank.domain.transactions.models.Tag;
 import com.buddycash.ironbank.domain.transactions.models.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public abstract class TransactionMapper {
-    public static TransactionResponse parse(Transaction transaction) {
+@Component
+public class TransactionMapper {
+    private static final Set<String> defaultCurrencies = Set.of("USD", "EUR", "GBP");
+    private final ICurrencyAggregatorService currencyAggregatorService;
+
+    @Autowired
+    public TransactionMapper(ICurrencyAggregatorService currencyAggregatorService) {
+        this.currencyAggregatorService = currencyAggregatorService;
+    }
+    public TransactionResponse parse(Transaction transaction) {
+        var aggregatorRequest = new CurrencyAggregatorRequest("BRL", defaultCurrencies, transaction.getPrice(), transaction.getTransactionAt());
+        var otherCurrencies = this.currencyAggregatorService.aggregate(aggregatorRequest);
+        var extra = new TransactionExtraInfo(otherCurrencies);
         var tagsResponse = transaction.getTags().stream().map(TagMapper::parse).collect(Collectors.toSet());
         return new TransactionResponse(
                 transaction.getId(),
@@ -19,15 +36,16 @@ public abstract class TransactionMapper {
                 transaction.getName(),
                 transaction.getDescription(),
                 transaction.getPrice(),
-                tagsResponse);
+                tagsResponse,
+                extra);
     }
 
-    public static Transaction parse(UUID accountId, TransactionCreateRequest transactionCreateRequest) {
+    public Transaction parse(UUID accountId, TransactionCreateRequest transactionCreateRequest) {
         var transaction = new TransactionCreateRequest(accountId, transactionCreateRequest);
-        return TransactionMapper.parse(transaction);
+        return this.parse(transaction);
     }
 
-    public static Transaction parse(TransactionCreateRequest transactionCreate) {
+    public Transaction parse(TransactionCreateRequest transactionCreate) {
         var tags = transactionCreate.tags().stream().map(t -> new Tag(transactionCreate.account(), t)).collect(Collectors.toSet());
         var transaction = new Transaction();
         transaction.setAccount(transactionCreate.account());
@@ -40,7 +58,7 @@ public abstract class TransactionMapper {
         return transaction;
     }
 
-    public static Transaction parse(TransactionResponse transactionResponse) {
+    public Transaction parse(TransactionResponse transactionResponse) {
         var tags = transactionResponse.tags().stream().map(TagMapper::parse).collect(Collectors.toSet());
         var transaction = new Transaction();
         transaction.setId(transactionResponse.id());

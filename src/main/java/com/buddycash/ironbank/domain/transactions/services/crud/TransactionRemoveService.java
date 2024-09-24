@@ -13,17 +13,21 @@ import java.util.UUID;
 
 @Service
 public class TransactionRemoveService implements ITransactionRemoveService {
+    private final TransactionRepository transactionRepository;
+    private final TransactionEventProducer transactionEventProducer;
+    private final TransactionMapper transactionMapper;
 
     @Autowired
-    private TransactionRepository transactionRepository;
-
-    @Autowired
-    private TransactionEventProducer transactionEventProducer;
+    public TransactionRemoveService(TransactionRepository transactionRepository, TransactionEventProducer transactionEventProducer, TransactionMapper transactionMapper) {
+        this.transactionRepository = transactionRepository;
+        this.transactionEventProducer = transactionEventProducer;
+        this.transactionMapper = transactionMapper;
+    }
 
     @Override
     public Optional<TransactionResponse> remove(UUID accountId, UUID id) {
         var transaction = transactionRepository.findByAccountAndId(accountId, id)
-                .map(TransactionMapper::parse);
+                .map(transactionMapper::parse);
         transaction.ifPresent(t -> {
             transactionRepository.deleteById(t.id());
             transactionEventProducer.publish(DataEventType.DELETE, t);

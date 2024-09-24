@@ -8,6 +8,7 @@ import com.buddycash.ironbank.domain.transactions.data.TransactionType;
 import com.buddycash.ironbank.domain.transactions.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -16,11 +17,14 @@ import java.util.UUID;
 
 @Service
 public class DataGeneratorService {
-    @Autowired
-    private TransactionService transactionService;
+    private final TransactionService transactionService;
+    private final AccountService accountService;
 
     @Autowired
-    private AccountService accountService;
+    public DataGeneratorService(TransactionService transactionService, AccountService accountService) {
+        this.transactionService = transactionService;
+        this.accountService = accountService;
+    }
 
     private TransactionCreateRequest makeTransaction(UUID accountId, TransactionType type, String name, double amount, Set<String> tags) {
         return new TransactionCreateRequest(accountId, type, Instant.now(), name, String.format("Description of %1s", name), BigDecimal.valueOf(amount), tags);
@@ -35,7 +39,7 @@ public class DataGeneratorService {
 
     public AccountResponse generateAccount() {
         var accountToCreate = new AccountCreateRequest("generated-account");
-        var account = accountService.create(accountToCreate);
+        var account = this.accountService.create(accountToCreate);
         this.generateTransactions(account);
         return account;
     }

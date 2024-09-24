@@ -14,14 +14,16 @@ import java.util.UUID;
 
 @Service
 public class TransactionService implements ITransactionSearchService, ITransactionCreateService, ITransactionRemoveService {
-    @Autowired
     private ITransactionCreateService transactionCreateService;
-
-    @Autowired
     private ITransactionSearchService transactionSearchService;
+    private ITransactionRemoveService transactionRemoveService;
 
     @Autowired
-    private ITransactionRemoveService transactionRemoveService;
+    public TransactionService(ITransactionCreateService transactionCreateService, ITransactionSearchService transactionSearchService, ITransactionRemoveService transactionRemoveService) {
+        this.transactionCreateService = transactionCreateService;
+        this.transactionSearchService = transactionSearchService;
+        this.transactionRemoveService = transactionRemoveService;
+    }
 
     @Override
     public TransactionResponse create(UUID accountId, TransactionCreateRequest transactionToCreate) {
