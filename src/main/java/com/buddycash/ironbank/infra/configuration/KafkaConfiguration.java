@@ -2,6 +2,7 @@ package com.buddycash.ironbank.infra.configuration;
 
 import com.buddycash.ironbank.domain.transactions.data.TransactionResponse;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -16,9 +17,12 @@ import java.util.Map;
 @EnableKafka
 public class KafkaConfiguration {
 
+    @Value("${app.topics.transaction}")
+    private String topicName;
+
     @Bean
     public NewTopic transactionTopic() {
-        return TopicBuilder.name("transaction-events")
+        return TopicBuilder.name(topicName)
                 .partitions(5)
                 .replicas(3)
                 .build();
