@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class TransactionMapper {
-    private static final Set<String> defaultCurrencies = Set.of("USD", "EUR", "GBP");
+    private static final Set<String> defaultCurrencies = Set.of("USD", "EUR", "GBP", "ARRS");
     private final ICurrencyAggregatorService currencyAggregatorService;
 
     @Autowired

@@ -1,11 +1,15 @@
 package com.buddycash.ironbank.domain.currencies;
 
+import com.buddycash.ironbank.domain.currencies.clients.DailyPriceResponse;
 import com.buddycash.ironbank.domain.currencies.clients.IAwesomeExchangePricesClient;
 import com.buddycash.ironbank.domain.currencies.data.CurrencyAggregatorRequest;
 import com.buddycash.ironbank.domain.currencies.data.CurrencyConvertRequest;
 import com.buddycash.ironbank.domain.currencies.data.CurrencyConvertResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.math.RoundingMode;
 import java.time.ZoneId;
@@ -40,7 +44,17 @@ public class AwesomeCurrencyService implements ICurrencyConverterService, ICurre
         var dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.systemDefault());
         String exchange = new StringBuilder().append(request.from()).append("-").append(request.to()).toString();
         String referenceDate = dateFormatter.format(request.when());
-        var currentExchange = awesomeExchangePricesAPI.dailyPrice(exchange, referenceDate, referenceDate);
+        List<DailyPriceResponse> currentExchange;
+        try {
+            currentExchange = awesomeExchangePricesAPI.dailyPrice(exchange, referenceDate, referenceDate);
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                System.out.println(e.getMessage());
+            } else {
+                System.out.println(e.getMessage());
+            }
+            currentExchange = List.of();
+        }
         if (currentExchange.isEmpty())
             return Optional.empty();
         var multiplier = currentExchange.getFirst().bid().setScale(2, RoundingMode.HALF_UP);
