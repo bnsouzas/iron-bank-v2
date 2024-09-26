@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class AccountCreateService implements IAccountCreateService {
 
-    @Autowired
-    private AccountRepository accountRepository;
-    @Override
-    public AccountResponse create(AccountCreateRequest accountCreate) {
-        var account = AccountMapper.parse(accountCreate);
-        var saved = accountRepository.save(account);
-        return AccountMapper.parse(saved);
-    }
+  @Autowired private AccountRepository accountRepository;
+
+  @Override
+  public AccountResponse create(AccountCreateRequest accountCreate) {
+    var account = AccountMapper.parse(accountCreate);
+    var saved = accountRepository.save(account);
+    return AccountMapper.parse(saved);
+  }
 }

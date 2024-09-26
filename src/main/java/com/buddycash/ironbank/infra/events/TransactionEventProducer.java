@@ -9,18 +9,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class TransactionEventProducer {
 
-    @Value("${app.topics.transaction}")
-    private String topicName;
+  @Value("${app.topics.transaction}")
+  private String topicName;
 
-    @Autowired
-    private KafkaTemplate<String, TransactionDataEvent> template;
+  @Autowired private KafkaTemplate<String, TransactionDataEvent> template;
 
-    public void publish(DataEventType type, TransactionResponse saved) {
-        var dataEvent = new TransactionDataEvent(type, saved);
-        var event = template.send(topicName, dataEvent);
-        event.whenComplete((result, ex) -> {
-            if (ex != null)
-                System.out.println(ex.getMessage());
+  public void publish(DataEventType type, TransactionResponse saved) {
+    var dataEvent = new TransactionDataEvent(type, saved);
+    var event = template.send(topicName, dataEvent);
+    event.whenComplete(
+        (result, ex) -> {
+          if (ex != null) {
+            System.out.println(ex.getMessage());
+          }
         });
-    }
+  }
 }

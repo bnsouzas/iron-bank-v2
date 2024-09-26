@@ -10,14 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class AccountCreateServiceTests extends BaseApplicationTest {
 
-    @Autowired
-    private AccountService accountService;
+  @Autowired private AccountService accountService;
 
-    @Test
-    public void createAccountServiceTest() {
-        var accountCreate = new AccountCreateRequest("Principal");
-        var created = accountService.create(accountCreate);
-        Assertions.assertNotNull(created.id());
-        Assertions.assertEquals(accountCreate.name(), created.name());
-    }
+  @Test
+  public void createAccountServiceTest() {
+    var accountCreate = new AccountCreateRequest("Principal");
+    var created = accountService.create(accountCreate);
+    Assertions.assertNotNull(created.id());
+    Assertions.assertEquals(accountCreate.name(), created.name());
+  }
 }

@@ -7,8 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class IronBankApplicationTests extends BaseApplicationTest {
 
-	@Test
-	void contextLoads() {
-	}
-
+  @Test
+  void contextLoads() {}
 }
