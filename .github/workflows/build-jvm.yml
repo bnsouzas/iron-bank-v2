@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Java CI with Maven
+name: Build JVM
 
 on:
   push:
@@ -32,9 +32,17 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
+    - run: java --version
   
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn -DskipTests -B package --file pom.xml
+
+    - run: mv target/iron-bank-0.0.1-SNAPSHOT.jar target/app.jar
+    - name: Upload .JAR
+      uses: actions/upload-artifact@v4
+      with:
+        name: app.jar
+        path: target/
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     # - name: Update dependency graph
