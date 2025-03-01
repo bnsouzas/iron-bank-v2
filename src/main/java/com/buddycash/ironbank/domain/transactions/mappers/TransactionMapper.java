@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TransactionMapper {
-  private static final Set<String> defaultCurrencies = Set.of("USD", "EUR", "GBP", "ARRS");
+  private static final Set<String> defaultCurrencies = Set.of("USD", "EUR", "GBP");
   private final ICurrencyAggregatorService currencyAggregatorService;
 
   @Autowired

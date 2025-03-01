@@ -10,6 +10,7 @@ import com.buddycash.ironbank.domain.transactions.repositories.TransactionReposi
 import com.buddycash.ironbank.domain.transactions.services.crud.TransactionCreateService;
 import com.buddycash.ironbank.domain.transactions.services.crud.TransactionRemoveService;
 import com.buddycash.ironbank.domain.transactions.services.crud.TransactionSearchService;
+import com.buddycash.ironbank.events.NotificationTransactionListener;
 import com.buddycash.ironbank.infra.events.TransactionEventProducer;
 import com.buddycash.ironbank.tools.DataGeneratorService;
 import java.util.UUID;
@@ -21,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
