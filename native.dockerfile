@@ -19,7 +19,7 @@ WORKDIR /app
 COPY . .
 RUN ./mvnw -Pnative -DskipTests clean package
 
-FROM debian:12-slim
+FROM gcr.io/distroless/base-debian12
 WORKDIR /app
 # Copy the built application from the previous image
 COPY --from=builder /app/target/iron-bank ./app
