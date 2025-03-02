@@ -115,9 +115,9 @@ jobs:
       with:
           context: .
           file: ./devops/images/jvm.dockerfile
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
-          push: false
-          tags: ${{ env.REGISTRY }}/bnsouzas/${{ env.REGISTRY }}:jvm-${{ github.ref_name }}-${{ github.sha }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}:jvm,${{ env.REGISTRY }}/${{ github.repository }}:jvm-${{ github.ref_name }},${{ env.REGISTRY }}/${{ github.repository }}:jvm-${{ github.ref_name }}-${{ github.sha }}
     - name: COPY CONTAINER IMAGE NAME
       run: echo "CONTAINER IMAGE:" jvm-${{ github.ref_name }}-${{ github.sha }}
 
