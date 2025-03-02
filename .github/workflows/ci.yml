@@ -14,6 +14,10 @@ on:
   pull_request:
     branches: [ "main", "release/*" ]
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   test-suite:
     runs-on: ubuntu-latest
@@ -55,18 +59,6 @@ jobs:
         name: app.jar
         path: target/
 
-  build-docker:
-    needs: build-jvm
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/download-artifact@v4
-      with:
-        name: app.jar
-        path: target/
-    - name: Build the Docker image
-      run: docker build . -f devops/images/jvm.dockerfile --tag iron-bank:jvm-$(date +%s)
-
   build-native:
     if: false # If true analyse if macos is needed
     needs: test-suite
@@ -94,6 +86,40 @@ jobs:
       with:
         name: app-${{ matrix.os }}
         path: target/app*
+
+  build-publish-docker-jvm:
+    needs: build-jvm
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: app.jar
+        path: target/
+
+    - name: Log in to the Container registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build and push
+      uses: docker/build-push-action@v6
+      with:
+          context: .
+          file: ./devops/images/jvm.dockerfile
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: false
+          tags: ${{ env.REGISTRY }}/bnsouzas/${{ env.REGISTRY }}:jvm-${{ github.ref_name }}-${{ github.sha }}
+    - name: COPY CONTAINER IMAGE NAME
+      run: echo "CONTAINER IMAGE:" jvm-${{ github.ref_name }}-${{ github.sha }}
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     # - name: Update dependency graph
