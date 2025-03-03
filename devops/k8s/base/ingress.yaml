@@ -1,0 +1,13 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: iron-bank
+spec:
+  entryPoints:
+  - web
+  routes:
+  - match: Host(`iron-bank.dungeon`)
+    kind: Rule
+    services:
+    - name: iron-bank
+      port: 8080

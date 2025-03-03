@@ -37,3 +37,4 @@ images:
 resources:
 - deployment.yaml
 - service.yaml
+- ingress.yaml
