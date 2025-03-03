@@ -31,6 +31,8 @@ spec:
         envFrom:
         - configMapRef:
             name: iron-bank-config
+        - secretRef:
+            name: iron-bank-secret
         resources:
           limits:
             memory: "512Mi"

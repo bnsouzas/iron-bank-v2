@@ -4,6 +4,7 @@ commonLabels:
   app.kubernetes.io/name: iron-bank
   app.kubernetes.io/component: server
   app.kubernetes.io/part-of: iron-bank
+  app.kubernetes.io/version: main-d4ebcbe79da0e13d864e679ee41e09f5d7b78f24
 configMapGenerator:
   - name: iron-bank-config
     envs:
@@ -17,7 +18,7 @@ generatorOptions:
 images:
  - name: iron-bank-server
    newName: ghcr.io/bnsouzas/iron-bank-v2
-   newTag: jvm-main-f4ca21d30fde671720bfb033668fe753ba384e8e
+   newTag: jvm-main-d4ebcbe79da0e13d864e679ee41e09f5d7b78f24
 resources:
 - deployment.yaml
 - service.yaml
