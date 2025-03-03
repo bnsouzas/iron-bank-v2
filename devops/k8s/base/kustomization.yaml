@@ -1,24 +1,39 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-commonLabels:
-  app.kubernetes.io/name: iron-bank
-  app.kubernetes.io/component: server
-  app.kubernetes.io/part-of: iron-bank
-  app.kubernetes.io/version: main-d4ebcbe79da0e13d864e679ee41e09f5d7b78f24
+
+labels:
+- includeSelectors: true
+  includeTemplates: true
+  pairs:
+    app.kubernetes.io/name: iron-bank
+    app.kubernetes.io/component: server
+    app.kubernetes.io/part-of: iron-bank
+- includeSelectors: false
+  includeTemplates: true
+  pairs:
+    app.kubernetes.io/version: main-54dc3eb0ff13b51ff136498670f202d268fb0a5c
+
 configMapGenerator:
   - name: iron-bank-config
     envs:
       - config/application.properties
+secretGenerator:
+  - name: iron-bank-secret
+    envs:
+      - secret/application.properties
+
 generatorOptions:
   disableNameSuffixHash: false
   labels:
     type: generated
   annotations:
     note: generated
+
 images:
  - name: iron-bank-server
    newName: ghcr.io/bnsouzas/iron-bank-v2
-   newTag: jvm-main-d4ebcbe79da0e13d864e679ee41e09f5d7b78f24
+   newTag: jvm-main-54dc3eb0ff13b51ff136498670f202d268fb0a5c
+
 resources:
 - deployment.yaml
 - service.yaml
