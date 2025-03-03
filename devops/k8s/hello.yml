@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  labels:
-    app.kubernetes.io/name: iron-bank-api
-    app.kubernetes.io/part-of: iron-bank
-  name: iron-bank-api

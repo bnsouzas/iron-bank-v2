@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iron-bank
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+  template:
+    metadata:
+      labels:
+    spec:
+      containers:
+      - name: iron-bank-server
+        image: iron-bank-server
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: iron-bank-database-credentials
+              key: username
+              optional: false
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: iron-bank-database-credentials
+              key: password
+              optional: false
+        envFrom:
+        - configMapRef:
+            name: iron-bank-config
+        resources:
+          limits:
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "512Mi"

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class NotificationTransactionListener
     implements MessageListener<String, TransactionDataEvent> {
   @Override
-  @KafkaListener(topics = "${app.topics.transaction}", groupId = "iron-bank-notifications")
+  @KafkaListener(topics = "${app.topics.transaction}", groupId = "${spring.kafka.consumer.group-id}")
   public void onMessage(ConsumerRecord<String, TransactionDataEvent> data) {
     var event = data.value();
     var transaction = event.data();
