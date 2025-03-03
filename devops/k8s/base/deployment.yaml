@@ -19,13 +19,25 @@ spec:
         - name: SPRING_DATASOURCE_USERNAME
           valueFrom:
             secretKeyRef:
-              name: iron-bank-database-credentials
+              name: iron-bank-postgres-credentials
               key: username
               optional: false
         - name: SPRING_DATASOURCE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: iron-bank-database-credentials
+              name: iron-bank-postgres-credentials
+              key: password
+              optional: false
+        - name: SPRING_DATA_MONGODB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: iron-bank-mongodb-credentials
+              key: username
+              optional: false
+        - name: SPRING_DATA_MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: iron-bank-mongodb-credentials
               key: password
               optional: false
         envFrom:
