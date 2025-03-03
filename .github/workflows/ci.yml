@@ -35,6 +35,25 @@ jobs:
     - name: Build with Maven
       run: mvn -B test --file pom.xml
 
+  test-kustomize:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+    - name: Update base kustomization
+      run: |
+        rm devops/k8s/base/kustomization.yaml
+        sed "s/_VERSION/${{ github.ref_name }}-${{ github.sha }}/g" devops/k8s/base/kustomization.tpl.yaml | \
+        sed "s/_IMAGE_TAG/jvm-${{ github.ref_name }}-${{ github.sha }}/g" > devops/k8s/base/kustomization.yaml
+    - name: 'Set up Kustomize'
+      run: |-
+        curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.3/kustomize_v5.4.3_linux_amd64.tar.gz
+        chmod u+x ./kustomize
+    - name: 'Show ./overlays/dev'
+      run: |-
+        kustomize build ./devops/k8s/overlays/dev
+    
   build-jvm:
     needs: test-suite
     runs-on: ubuntu-latest
@@ -120,8 +139,8 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ github.repository }}:jvm,${{ env.REGISTRY }}/${{ github.repository }}:jvm-${{ github.ref_name }},${{ env.REGISTRY }}/${{ github.repository }}:jvm-${{ github.ref_name }}-${{ github.sha }}
     - name: COPY CONTAINER IMAGE NAME
       run: echo "CONTAINER IMAGE:" jvm-${{ github.ref_name }}-${{ github.sha }}
-  trigger-argocd:
-    needs: build-publish-docker-jvm
+  apply-kustomize:
+    needs: [ build-publish-docker-jvm, test-kustomize ]
     runs-on: ubuntu-latest
     permissions:
       contents: write
