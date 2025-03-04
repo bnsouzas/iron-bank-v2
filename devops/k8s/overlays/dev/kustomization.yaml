@@ -22,3 +22,9 @@ patches:
     version: v1
     kind: Deployment
     name: iron-bank
+- path: hpa-replica-patch.yaml
+  target:
+    group: autoscaling
+    version: v2
+    kind: HorizontalPodAutoscaler
+    name: iron-bank
