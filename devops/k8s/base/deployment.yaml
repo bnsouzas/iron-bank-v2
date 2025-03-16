@@ -44,7 +44,7 @@ spec:
         - configMapRef:
             name: iron-bank-config
         - secretRef:
-            name: iron-bank-secret
+            name: iron-bank-app
         resources:
           limits:
             memory: "512Mi"

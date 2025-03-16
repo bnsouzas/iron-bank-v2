@@ -17,10 +17,6 @@ configMapGenerator:
   - name: iron-bank-config
     envs:
       - config/application.properties
-secretGenerator:
-  - name: iron-bank-secret
-    envs:
-      - secret/application.properties
 
 generatorOptions:
   disableNameSuffixHash: false

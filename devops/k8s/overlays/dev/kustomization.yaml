@@ -7,12 +7,6 @@ configMapGenerator:
     envs:
       - config/application.properties
 
-secretGenerator:
-  - name: iron-bank-secret
-    behavior: merge
-    envs:
-      - secret/application.properties
-
 resources:
   - ../../base
 patches:
