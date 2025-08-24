@@ -11,7 +11,7 @@ labels:
 - includeSelectors: false
   includeTemplates: true
   pairs:
-    app.kubernetes.io/version: main-d3ca49e41838d3d4ef1adc990e508fb9bb4e6f31
+    app.kubernetes.io/version: main-e4de4b632c71aa9712caf8ef3807ff746787d5ab
 
 configMapGenerator:
   - name: iron-bank-config
@@ -28,7 +28,7 @@ generatorOptions:
 images:
  - name: iron-bank-server
    newName: ghcr.io/bnsouzas/iron-bank-v2
-   newTag: jvm-main-d3ca49e41838d3d4ef1adc990e508fb9bb4e6f31
+   newTag: jvm-main-e4de4b632c71aa9712caf8ef3807ff746787d5ab
 
 resources:
 - deployment.yaml
