@@ -4,10 +4,13 @@ metadata:
   name: iron-bank
 spec:
   entryPoints:
-  - web
+  - websecure
   routes:
-  - match: Host(`iron-bank.dungeon`)
-    kind: Rule
+  - kind: Rule
+    match: Host(`iron-bank.app.tribuz.com.br`)
     services:
     - name: iron-bank
+      passHostHeader: true
       port: 8080
+  tls:
+    secretName: services/services-tls

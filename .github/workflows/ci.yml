@@ -133,7 +133,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
           context: .
-          file: ./devops/images/jvm.dockerfile
+          file: ./devops/docker/jvm.dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.repository }}:jvm,${{ env.REGISTRY }}/${{ github.repository }}:jvm-${{ github.ref_name }},${{ env.REGISTRY }}/${{ github.repository }}:jvm-${{ github.ref_name }}-${{ github.sha }}
