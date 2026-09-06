@@ -12,6 +12,8 @@ spec:
   template:
     metadata:
       name: iron-bank
+      annotations:
+        instrumentation.opentelemetry.io/inject-java: "echo-instrumentation"
     spec:
       containers:
       - name: iron-bank-server
