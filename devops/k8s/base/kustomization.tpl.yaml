@@ -35,3 +35,4 @@ resources:
 - service.yaml
 - ingress.yaml
 - hpa.yaml
+- certificate.yaml
