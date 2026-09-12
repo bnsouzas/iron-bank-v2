@@ -13,4 +13,4 @@ spec:
       passHostHeader: true
       port: 8080
   tls:
-    secretName: services/services-tls
+    secretName: services/application-tls
